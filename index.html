@@ -1,0 +1,89 @@
+`; // Create blob and download HTML file const blob = new Blob([reportContent], { type: 'text/html;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `${(leadInfo.companyName || 'Company').replace(/[^a-zA-Z0-9]/g, '_')}_AI_Readiness_Report.html`; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(url); // Also open in new window for immediate viewing and printing const newWindow = window.open('', '_blank'); if (newWindow) { newWindow.document.write(reportContent); newWindow.document.close(); } }; // Submission status component const SubmissionStatusAlert = ({ status }) => { if (status === 'idle') return null; if (status === 'submitting') { return (
+Processing Your Assessment...
+Please wait while we analyze your responses.
+
+); } if (status === 'success') { return (
+Assessment Completed Successfully!
+Your AI readiness assessment has been processed.
+
+); } if (status === 'error') { return (
+Processing Issue
+There was an issue processing your assessment. Please try again.
+
+Retry Submission
+); } return null; }; const currentQuestion = questions[currentStep]; const isLastQuestion = currentStep === questions.length - 1; const isLeadCapture = currentStep === questions.length; if (showResults) { const categoryInfo = getCategoryInfo(category); return (
+your business . our priority
+
+Your AI Readiness Assessment
+Complete analysis of your organization's AI adoption readiness
+
+{categoryInfo.icon}
+{category}
+Readiness Score: {score}%
+
+{categoryInfo.description}
+
+Recommended Next Steps
+{categoryInfo.recommendations.map((rec, index) => (
+{rec}
+))}
+Your Pain Points Analysis
+{answers.pain_points?.map((point, index) => (
+{point}
+)) ||
+No specific pain points identified
+
+}
+Ready to Transform Your Business?
+Schedule a free consultation to discuss how On3oard can help accelerate your AI journey.
+
+Generate Report setShowShareModal(true)} className="flex items-center justify-center border-2 border-orange-500 text-orange-600 px-6 py-3 rounded-lg font-semibold hover:bg-orange-50 transition-all" > Share Calculator
+{showShareModal && (
+Share AI Readiness Calculator
+Help others assess their AI readiness with On3oard
+
+ setShareableLink(e.target.value)} value={shareableLink} className="flex-1 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 bg-gray-50 focus:outline-none" /> {copyStatus}
+setShowShareModal(false)} className="w-full bg-orange-500 text-white px-4 py-3 rounded-lg font-medium hover:bg-orange-600 transition-all" > Close
+)}
+); } if (isLeadCapture) { return (
+your business . our priority
+
+Get Your AI Readiness Report
+Enter your details to receive personalized recommendations
+
+Company Name * 
+{leadInfo.companyName
+ setLeadInfo({...leadInfo, companyName: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="Your Company Name" />
+Contact Person * 
+{leadInfo.contactName
+ setLeadInfo({...leadInfo, contactName: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="Your Full Name" />
+Work Email Address * 
+{leadInfo.email
+ setLeadInfo({...leadInfo, email: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="name@company.com" />
+Company Size * 
+Select size...
+Annual Revenue * 
+Select range...
+AI Implementation Budget * 
+Select budget range...
+Phone Number (Optional) 
+{leadInfo.phone
+ setLeadInfo({...leadInfo, phone: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent" placeholder="+1 (555) 123-4567" />
+Back {submissionStatus === 'submitting' && } {submissionStatus === 'submitting' ? 'Processing...' : 'Get My Report'}
+); } return (
+your business . our priority
+
+AI Readiness Assessment
+Discover how ready your organization is for AI transformation
+
+Question {currentStep + 1} of {questions.length} {Math.round(((currentStep + 1) / questions.length) * 100)}% Complete
+{currentQuestion.question}
+{currentQuestion.type === 'dropdown' && ( 
+Select your industry...
+ )} {currentQuestion.type === 'radio' && (
+{currentQuestion.options.map((option, index) => (  handleAnswer(currentQuestion.id, parseInt(e.target.value))} className="mt-1 mr-4 text-orange-500 focus:ring-orange-500" /> {option.text} ))}
+)} {currentQuestion.type === 'checkbox' && (
+{currentQuestion.options.map((option, index) => (  { const current = answers[currentQuestion.id] || []; if (e.target.checked) { handleAnswer(currentQuestion.id, [...current, option.text]); } else { handleAnswer(currentQuestion.id, current.filter(item => item !== option.text)); } }} className="mt-1 mr-4 text-orange-500 focus:ring-orange-500" /> {option.text} ))}
+)}
+Previous {isLastQuestion ? 'Complete Assessment' : 'Next Question'}
+); }; ReactDOM.createRoot(document.getElementById('root')).render();
